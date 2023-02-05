@@ -2,9 +2,11 @@ package com.erebelo.springh2demo.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,17 +19,20 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"customer"})
 @Builder
-@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "orders")
 public class OrderEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include()
     private Integer id;
 
     @ManyToOne

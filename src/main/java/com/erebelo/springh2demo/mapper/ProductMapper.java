@@ -18,4 +18,6 @@ public interface ProductMapper {
 
     ProductEntity requestToEntity(ProductRequest request);
 
+    ProductEntity responseToEntity(ProductResponse response);
+
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_001;
 import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_003;
 import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_004;
 import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_005;
@@ -54,6 +55,16 @@ public class ProductServiceImpl implements ProductService {
 
         LOGGER.info(RESPONSE_BODY_LOGGER, productEntityList);
         return mapper.entityListToResponseList(productEntityList);
+    }
+
+    @Override
+    public ProductResponse getProductById(Integer id) {
+        LOGGER.info("Getting product by id: {}", id);
+        var productEntity = repository.findById(id).orElseThrow(() ->
+                new StandardException(ERROR_404_001, id));
+
+        LOGGER.info(RESPONSE_BODY_LOGGER, productEntity);
+        return mapper.entityToResponse(productEntity);
     }
 
     @Override

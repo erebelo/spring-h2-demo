@@ -14,4 +14,6 @@ public interface CustomerMapper {
 
     CustomerEntity requestToEntity(CustomerRequest request);
 
+    CustomerEntity responseToEntity(CustomerResponse response);
+
 }
