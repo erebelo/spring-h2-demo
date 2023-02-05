@@ -10,19 +10,14 @@ REST API project developed in Java using Spring Boot framework and H2 database.
 
 ----------
 
-## Environment Variables
-
-----------
-
 ## Run App
 Run the SpringH2DemoApplication class as Java Application
 
 ----------
 
-## Releases
+## Diagram
+[Entity and Relationship Diagram][1]
 
 ----------
 
-## Demo
-
-----------
+[1]: https://github.com/erebelo/spring-h2-demo/blob/develop/diagram/Entity%20and%20Relationship%20Diagram.PNG
