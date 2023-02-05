@@ -36,7 +36,7 @@ public class CustomerController {
 
     @GetMapping(value = CUSTOMER + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Integer id) {
-        LOGGER.info("Getting customer by id");
+        LOGGER.info("Getting customer by id: {}", id);
 
         var response = service.getCustomerById(id);
 
@@ -64,7 +64,7 @@ public class CustomerController {
 
     @DeleteMapping(value = CUSTOMER + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteCustomer(@PathVariable Integer id) {
-        LOGGER.info("Deleting customer");
+        LOGGER.info("Deleting customer by id: {}", id);
         service.deleteCustomer(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

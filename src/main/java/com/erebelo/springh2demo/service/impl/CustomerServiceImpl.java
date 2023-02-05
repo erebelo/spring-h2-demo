@@ -48,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
         });
 
         var customerEntity = mapper.requestToEntity(customerRequest);
-        LOGGER.info("Inserting customer: {}", customerRequest);
+        LOGGER.info("Inserting customer: {}", customerEntity);
         customerEntity = repository.save(customerEntity);
 
         LOGGER.info(RESPONSE_BODY_LOGGER, customerEntity);

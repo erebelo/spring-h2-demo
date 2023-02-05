@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,9 +30,11 @@ public class CustomerEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "name is mandatory")
     private String name;
 
     @Column(unique = true)
+    @NotBlank(message = "email is mandatory")
     private String email;
 
     @OneToMany(mappedBy = "customer")

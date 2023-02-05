@@ -16,7 +16,10 @@ public enum ErrorEnum {
     ERROR_404_001("Object not found by id: %s"),
     ERROR_404_002("Object not found by id: %s. Try entering it instead of updating it"),
     ERROR_404_003("The delete operation has not been completed as the object was not found by id: %s"),
-    ERROR_409_001("The object already exists. Try updating it instead of entering it");
+    ERROR_404_004("Object not found"),
+    ERROR_404_005("Object not found by name: %s"),
+    ERROR_409_001("The object already exists. Try updating it instead of entering it"),
+    ERROR_409_002("The object already exists by name: %s");
 
     private final String value;
 
