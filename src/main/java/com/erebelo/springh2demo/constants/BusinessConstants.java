@@ -7,5 +7,8 @@ import lombok.NoArgsConstructor;
 public final class BusinessConstants {
 
     public static final String HEALTH_CHECK = "/healthcheck";
+    public static final String CUSTOMER = "/customer";
+    public static final String PRODUCT = "/product";
+    public static final String ORDER = "/order";
 
 }
