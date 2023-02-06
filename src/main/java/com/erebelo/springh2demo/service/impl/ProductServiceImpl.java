@@ -30,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
     private static final String CHECK_OBJ_LOGGER = "Checking whether product object exists by %s: {}";
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
+    private static final String PRODUCT = "Product";
 
     @Override
     public List<ProductResponse> getProducts() {
@@ -37,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
         var productEntityList = repository.findAll();
 
         if (productEntityList.isEmpty()) {
-            throw new StandardException(ERROR_404_004);
+            throw new StandardException(ERROR_404_004, PRODUCT);
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, productEntityList);
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
         var productEntityList = repository.findByNameContainingIgnoreCase(name);
 
         if (productEntityList.isEmpty()) {
-            throw new StandardException(ERROR_404_005, name);
+            throw new StandardException(ERROR_404_005, PRODUCT, name);
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, productEntityList);
@@ -61,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Integer id) {
         LOGGER.info("Getting product by id: {}", id);
         var productEntity = repository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_001, id));
+                new StandardException(ERROR_404_001, PRODUCT, id));
 
         LOGGER.info(RESPONSE_BODY_LOGGER, productEntity);
         return mapper.entityToResponse(productEntity);
@@ -72,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse insertProduct(ProductRequest productRequest) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "name"), productRequest.getName());
         repository.findByName(productRequest.getName()).ifPresent(o -> {
-            throw new StandardException(ERROR_409_002, productRequest.getName());
+            throw new StandardException(ERROR_409_002, PRODUCT, productRequest.getName());
         });
 
         var productEntity = mapper.requestToEntity(productRequest);
@@ -88,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Integer id) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "id"), id);
         var productEntity = repository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_003, id));
+                new StandardException(ERROR_404_003, PRODUCT, id));
 
         LOGGER.info("Deleting product: {}", productEntity);
         repository.delete(productEntity);

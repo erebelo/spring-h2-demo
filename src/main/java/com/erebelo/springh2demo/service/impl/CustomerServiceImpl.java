@@ -28,12 +28,13 @@ public class CustomerServiceImpl implements CustomerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
     private static final String CHECK_OBJ_LOGGER = "Checking whether customer object exists by %s: {}";
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
+    private static final String CUSTOMER = "Customer";
 
     @Override
     public CustomerResponse getCustomerById(Integer id) {
         LOGGER.info("Getting customer by id: {}", id);
         var customerEntity = repository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_001, id));
+                new StandardException(ERROR_404_001, CUSTOMER, id));
 
         LOGGER.info(RESPONSE_BODY_LOGGER, customerEntity);
         return mapper.entityToResponse(customerEntity);
@@ -44,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse insertCustomer(CustomerRequest customerRequest) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "email"), customerRequest.getEmail());
         repository.findByEmail(customerRequest.getEmail()).ifPresent(o -> {
-            throw new StandardException(ERROR_409_001);
+            throw new StandardException(ERROR_409_001, CUSTOMER);
         });
 
         var customerEntity = mapper.requestToEntity(customerRequest);
@@ -60,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void updateCustomer(Integer id, CustomerRequest customerRequest) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "id"), id);
         var customerEntity = repository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_002, id));
+                new StandardException(ERROR_404_002, CUSTOMER, id));
 
         setUpdateAttributes(customerEntity, mapper.requestToEntity(customerRequest));
         LOGGER.info("Updating customer: {}", customerEntity);
@@ -72,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomer(Integer id) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "id"), id);
         var customerEntity = repository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_003, id));
+                new StandardException(ERROR_404_003, CUSTOMER, id));
 
         LOGGER.info("Deleting customer: {}", customerEntity);
         repository.delete(customerEntity);
