@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,6 +22,7 @@ import static com.erebelo.springh2demo.constants.BusinessConstants.ORDER;
 
 @Validated
 @RestController
+@RequestMapping(ORDER)
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -29,7 +31,7 @@ public class OrderController {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
     private static final String ORDER_RESPONSE = "Order response: {}";
 
-    @PostMapping(value = ORDER, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderResponse> insertOrder(@Valid @RequestBody OrderRequest orderRequest) {
         LOGGER.info("Inserting order - Request body: {}", orderRequest);
         var response = service.insertOrder(orderRequest);

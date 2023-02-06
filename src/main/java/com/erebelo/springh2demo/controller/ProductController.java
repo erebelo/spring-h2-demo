@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,6 +29,7 @@ import static com.erebelo.springh2demo.utils.UrlUtils.decodeParam;
 
 @Validated
 @RestController
+@RequestMapping(PRODUCT)
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -36,7 +38,7 @@ public class ProductController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
     private static final String PRODUCT_RESPONSE = "Product response: {}";
 
-    @GetMapping(value = PRODUCT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductResponse>> getProducts() {
         LOGGER.info("Getting products");
 
@@ -46,7 +48,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping(value = PRODUCT + "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductResponse>> getProductByName(@RequestParam String name) {
         name = decodeParam(name);
         LOGGER.info("Getting product by name: {}", name);
@@ -57,7 +59,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value = PRODUCT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductResponse> insertProduct(@Valid @RequestBody ProductRequest productRequest) {
         LOGGER.info("Inserting product - Request body: {}", productRequest);
         var response = service.insertProduct(productRequest);
@@ -67,7 +69,7 @@ public class ProductController {
         return ResponseEntity.created(uri).build();
     }
 
-    @DeleteMapping(value = PRODUCT + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {
         LOGGER.info("Deleting product by id: {}", id);
         service.deleteProduct(id);

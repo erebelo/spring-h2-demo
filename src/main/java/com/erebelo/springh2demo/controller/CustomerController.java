@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -26,6 +27,7 @@ import static com.erebelo.springh2demo.constants.BusinessConstants.CUSTOMER;
 
 @Validated
 @RestController
+@RequestMapping(CUSTOMER)
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -34,7 +36,7 @@ public class CustomerController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
     private static final String CUSTOMER_RESPONSE = "Customer response: {}";
 
-    @GetMapping(value = CUSTOMER + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Integer id) {
         LOGGER.info("Getting customer by id: {}", id);
 
@@ -44,7 +46,7 @@ public class CustomerController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value = CUSTOMER, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerResponse> insertCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
         LOGGER.info("Inserting customer - Request body: {}", customerRequest);
         var response = service.insertCustomer(customerRequest);
@@ -54,7 +56,7 @@ public class CustomerController {
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping(value = CUSTOMER + "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateCustomer(@PathVariable Integer id, @Valid @RequestBody CustomerRequest customerRequest) {
         LOGGER.info("Updating customer - Request body: {}", customerRequest);
         service.updateCustomer(id, customerRequest);
@@ -62,7 +64,7 @@ public class CustomerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = CUSTOMER + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteCustomer(@PathVariable Integer id) {
         LOGGER.info("Deleting customer by id: {}", id);
         service.deleteCustomer(id);
