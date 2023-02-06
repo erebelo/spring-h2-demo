@@ -15,9 +15,15 @@ Run the SpringH2DemoApplication class as Java Application
 
 ----------
 
-## Diagram
-[Entity and Relationship Diagram][1]
+## Collection
+[Project Collection][1]
 
 ----------
 
-[1]: https://github.com/erebelo/spring-h2-demo/blob/develop/diagram/Entity%20and%20Relationship%20Diagram.PNG
+## Diagram
+[Entity and Relationship Diagram][2]
+
+----------
+
+[1]: https://github.com/erebelo/spring-h2-demo/tree/develop/collection
+[2]: https://github.com/erebelo/spring-h2-demo/blob/develop/diagram/Entity%20and%20Relationship%20Diagram.PNG
