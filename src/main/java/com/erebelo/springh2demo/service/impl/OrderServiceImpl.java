@@ -3,9 +3,8 @@ package com.erebelo.springh2demo.service.impl;
 import com.erebelo.springh2demo.domain.entity.OrderEntity;
 import com.erebelo.springh2demo.domain.entity.ProductOrderEntity;
 import com.erebelo.springh2demo.domain.request.OrderRequest;
-import com.erebelo.springh2demo.domain.response.CustomerResponse;
 import com.erebelo.springh2demo.domain.response.OrderResponse;
-import com.erebelo.springh2demo.domain.response.ProductResponse;
+import com.erebelo.springh2demo.exception.StandardException;
 import com.erebelo.springh2demo.mapper.CustomerMapper;
 import com.erebelo.springh2demo.mapper.OrderMapper;
 import com.erebelo.springh2demo.mapper.ProductMapper;
@@ -21,7 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+
+import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_004;
 
 @Service
 @RequiredArgsConstructor
@@ -60,9 +63,44 @@ public class OrderServiceImpl implements OrderService {
         return mapper.entityToResponse(orderEntity);
     }
 
+    @Override
+    public List<OrderResponse> getOrderByCustomerId(Integer customerId) {
+        LOGGER.info("Getting customer by id from customer service");
+        var customerResponse = customerService.getCustomerById(customerId);
+        var customerEntity = customerMapper.responseToEntity(customerResponse);
+
+        LOGGER.info("Getting order by customer object: {}", customerEntity);
+        var orderEntities = repository.findByCustomer(customerEntity);
+
+        if (Objects.isNull(orderEntities) || orderEntities.isEmpty()) {
+            throw new StandardException(ERROR_404_004, "Orders");
+        }
+
+        LOGGER.info(RESPONSE_BODY_LOGGER, orderEntities);
+        return mapper.entityListToResponseList(orderEntities);
+    }
+
+    @Override
+    public List<OrderResponse> getOrderByProductId(Integer productId) {
+        LOGGER.info("Getting orders id by product id: {}", productId);
+        var orderIds = repository.nativeFindByProductId(productId);
+
+        if (Objects.nonNull(orderIds) && !orderIds.isEmpty()) {
+            LOGGER.info("Getting orders by orders id: {}", orderIds);
+            var orderEntities = repository.findAllById(orderIds);
+
+            if (Objects.nonNull(orderEntities) && !orderEntities.isEmpty()) {
+                LOGGER.info(RESPONSE_BODY_LOGGER, orderEntities);
+                return mapper.entityListToResponseList(orderEntities);
+            }
+        }
+
+        throw new StandardException(ERROR_404_004, "Orders");
+    }
+
     private void setOrderInsertAttributes(OrderEntity orderEntity, OrderRequest orderRequest) {
         LOGGER.info("Getting customer by id from customer service");
-        CustomerResponse customerResponse = customerService.getCustomerById(orderRequest.getCustomer().getId());
+        var customerResponse = customerService.getCustomerById(orderRequest.getCustomer().getId());
 
         orderEntity.setCustomer(customerMapper.responseToEntity(customerResponse));
         orderEntity.setProductOrders(mapper.productOrderRequestSetToEntitySet(orderRequest.getProductOrders()));
@@ -73,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
     private void calculateAndSetTotal(Set<ProductOrderEntity> productOrders) {
         for (ProductOrderEntity productOrder : productOrders) {
             LOGGER.info("Getting product by id from product service");
-            ProductResponse productResponse = productService.getProductById(productOrder.getProduct().getId());
+            var productResponse = productService.getProductById(productOrder.getProduct().getId());
 
             var price = productResponse.getPrice();
             var amount = BigDecimal.valueOf(productOrder.getAmount());

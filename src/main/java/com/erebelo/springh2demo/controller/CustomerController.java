@@ -47,7 +47,7 @@ public class CustomerController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CustomerResponse> insertCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<Void> insertCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
         LOGGER.info("Inserting customer - Request body: {}", customerRequest);
         var response = service.insertCustomer(customerRequest);
 

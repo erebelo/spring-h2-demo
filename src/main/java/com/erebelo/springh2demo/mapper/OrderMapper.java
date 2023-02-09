@@ -8,6 +8,7 @@ import com.erebelo.springh2demo.domain.response.ProductOrderResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.mapstruct.ReportingPolicy.WARN;
@@ -19,6 +20,8 @@ public interface OrderMapper {
 
     @Mapping(target = "id.product.id", source = "product.id")
     ProductOrderEntity map(ProductOrderDTO productOrderDTO);
+
+    List<OrderResponse> entityListToResponseList(List<OrderEntity> entityList);
 
     OrderResponse entityToResponse(OrderEntity entity);
 

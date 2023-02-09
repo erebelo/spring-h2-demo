@@ -60,7 +60,7 @@ public class ProductController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductResponse> insertProduct(@Valid @RequestBody ProductRequest productRequest) {
+    public ResponseEntity<Void> insertProduct(@Valid @RequestBody ProductRequest productRequest) {
         LOGGER.info("Inserting product - Request body: {}", productRequest);
         var response = service.insertProduct(productRequest);
 
