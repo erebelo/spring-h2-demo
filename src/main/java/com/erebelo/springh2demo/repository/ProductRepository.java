@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     List<ProductEntity> findByNameContainingIgnoreCase(String name);
 
-    Optional<Object> findByName(String name);
+    Optional<ProductEntity> findByName(String name);
 
 }

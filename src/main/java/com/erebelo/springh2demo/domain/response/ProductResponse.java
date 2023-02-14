@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductResponse {
 
-    private Integer id;
+    private Long id;
     private String name;
     private BigDecimal price;
 

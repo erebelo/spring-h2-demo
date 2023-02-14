@@ -39,7 +39,7 @@ public class ProductEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include()
-    private Integer id;
+    private Long id;
 
     @Column(unique = true)
     @NotBlank(message = "name is mandatory")

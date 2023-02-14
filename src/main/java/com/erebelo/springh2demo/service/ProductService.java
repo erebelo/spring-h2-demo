@@ -11,10 +11,10 @@ public interface ProductService {
 
     List<ProductResponse> getProductByName(String name);
 
-    ProductResponse getProductById(Integer id);
+    ProductResponse getProductById(Long id);
 
     ProductResponse insertProduct(ProductRequest productRequest);
 
-    void deleteProduct(Integer id);
+    void deleteProduct(Long id);
 
 }

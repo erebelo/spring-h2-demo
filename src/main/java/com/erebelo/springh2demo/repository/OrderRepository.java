@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
+public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     List<OrderEntity> findByCustomer(CustomerEntity customer);
 
@@ -17,6 +17,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
             " INNER JOIN PRODUCT_ORDERS PO ON PO.PRODUCT_ID = P.ID" +
             " INNER JOIN ORDERS O ON O.ID = PO.ORDER_ID" +
             " WHERE PRODUCT_ID = ?1", nativeQuery = true)
-    List<Integer> nativeFindByProductId(Integer productId);
+    List<Long> nativeFindByProductId(Long productId);
 
 }

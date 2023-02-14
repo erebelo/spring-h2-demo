@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getOrderByCustomerId(Integer customerId) {
+    public List<OrderResponse> getOrderByCustomerId(Long customerId) {
         LOGGER.info("Getting customer by id from customer service");
         var customerResponse = customerService.getCustomerById(customerId);
         var customerEntity = customerMapper.responseToEntity(customerResponse);
@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getOrderByProductId(Integer productId) {
+    public List<OrderResponse> getOrderByProductId(Long productId) {
         LOGGER.info("Getting orders id by product id: {}", productId);
         var orderIds = repository.nativeFindByProductId(productId);
 

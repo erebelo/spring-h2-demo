@@ -17,7 +17,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderResponse {
 
-    private Integer id;
+    private Long id;
     private CustomerResponseDTO customer;
     private Set<ProductOrderResponseDTO> productOrders;
 }

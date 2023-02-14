@@ -9,8 +9,8 @@ public interface OrderService {
 
     OrderResponse insertOrder(OrderRequest orderRequest);
 
-    List<OrderResponse> getOrderByCustomerId(Integer customerId);
+    List<OrderResponse> getOrderByCustomerId(Long customerId);
 
-    List<OrderResponse> getOrderByProductId(Integer productId);
+    List<OrderResponse> getOrderByProductId(Long productId);
 
 }

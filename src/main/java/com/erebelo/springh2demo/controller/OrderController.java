@@ -46,7 +46,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/customer/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<OrderResponse>> getOrderByCustomerId(@PathVariable Integer id) {
+    public ResponseEntity<List<OrderResponse>> getOrderByCustomerId(@PathVariable Long id) {
         LOGGER.info("Getting order by customer id: {}", id);
 
         var response = service.getOrderByCustomerId(id);
@@ -56,7 +56,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<OrderResponse>> getOrderByProductId(@PathVariable Integer id) {
+    public ResponseEntity<List<OrderResponse>> getOrderByProductId(@PathVariable Long id) {
         LOGGER.info("Getting order by product id: {}", id);
 
         var response = service.getOrderByProductId(id);

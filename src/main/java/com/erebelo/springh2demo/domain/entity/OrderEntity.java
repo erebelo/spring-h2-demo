@@ -33,7 +33,7 @@ public class OrderEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include()
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

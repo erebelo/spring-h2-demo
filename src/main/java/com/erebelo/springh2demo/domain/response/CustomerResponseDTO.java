@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerResponseDTO {
 
-    private Integer id;
+    private Long id;
     private String name;
 
 }

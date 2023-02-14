@@ -37,7 +37,7 @@ public class CustomerController {
     private static final String CUSTOMER_RESPONSE = "Customer response: {}";
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Integer id) {
+    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Long id) {
         LOGGER.info("Getting customer by id: {}", id);
 
         var response = service.getCustomerById(id);
@@ -57,7 +57,7 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateCustomer(@PathVariable Integer id, @Valid @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<Void> updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerRequest customerRequest) {
         LOGGER.info("Updating customer - Request body: {}", customerRequest);
         service.updateCustomer(id, customerRequest);
 
@@ -65,7 +65,7 @@ public class CustomerController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         LOGGER.info("Deleting customer by id: {}", id);
         service.deleteCustomer(id);
 

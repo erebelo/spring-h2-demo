@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse getProductById(Integer id) {
+    public ProductResponse getProductById(Long id) {
         LOGGER.info("Getting product by id: {}", id);
         var productEntity = repository.findById(id).orElseThrow(() ->
                 new StandardException(ERROR_404_001, PRODUCT, id));
@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(Integer id) {
+    public void deleteProduct(Long id) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "id"), id);
         var productEntity = repository.findById(id).orElseThrow(() ->
                 new StandardException(ERROR_404_003, PRODUCT, id));

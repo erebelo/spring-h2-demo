@@ -5,12 +5,12 @@ import com.erebelo.springh2demo.domain.response.CustomerResponse;
 
 public interface CustomerService {
 
-    CustomerResponse getCustomerById(Integer id);
+    CustomerResponse getCustomerById(Long id);
 
     CustomerResponse insertCustomer(CustomerRequest customerRequest);
 
-    void updateCustomer(Integer id, CustomerRequest customerRequest);
+    void updateCustomer(Long id, CustomerRequest customerRequest);
 
-    void deleteCustomer(Integer id);
+    void deleteCustomer(Long id);
 
 }

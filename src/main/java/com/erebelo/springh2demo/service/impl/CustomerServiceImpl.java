@@ -31,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
     private static final String CUSTOMER = "Customer";
 
     @Override
-    public CustomerResponse getCustomerById(Integer id) {
+    public CustomerResponse getCustomerById(Long id) {
         LOGGER.info("Getting customer by id: {}", id);
         var customerEntity = repository.findById(id).orElseThrow(() ->
                 new StandardException(ERROR_404_001, CUSTOMER, id));
@@ -58,7 +58,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public void updateCustomer(Integer id, CustomerRequest customerRequest) {
+    public void updateCustomer(Long id, CustomerRequest customerRequest) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "id"), id);
         var customerEntity = repository.findById(id).orElseThrow(() ->
                 new StandardException(ERROR_404_002, CUSTOMER, id));
@@ -70,7 +70,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public void deleteCustomer(Integer id) {
+    public void deleteCustomer(Long id) {
         LOGGER.info(String.format(CHECK_OBJ_LOGGER, "id"), id);
         var customerEntity = repository.findById(id).orElseThrow(() ->
                 new StandardException(ERROR_404_003, CUSTOMER, id));

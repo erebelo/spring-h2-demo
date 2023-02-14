@@ -70,7 +70,7 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         LOGGER.info("Deleting product by id: {}", id);
         service.deleteProduct(id);
 

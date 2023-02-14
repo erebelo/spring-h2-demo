@@ -18,6 +18,6 @@ import javax.validation.constraints.NotNull;
 public class ProductDTO {
 
     @NotNull(message = "id is mandatory")
-    private Integer id;
+    private Long id;
 
 }

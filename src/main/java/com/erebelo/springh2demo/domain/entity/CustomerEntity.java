@@ -33,7 +33,7 @@ public class CustomerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include()
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "name is mandatory")
     private String name;
