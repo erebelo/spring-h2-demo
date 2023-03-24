@@ -184,7 +184,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/spring-h2-demo/product/filter?name=Iphone",
+							"raw": "http://localhost:8080/spring-h2-demo/product/filter?name=tv",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -198,7 +198,7 @@
 							"query": [
 								{
 									"key": "name",
-									"value": "Iphone"
+									"value": "tv"
 								}
 							]
 						}
@@ -313,6 +313,126 @@
 							"path": [
 								"spring-h2-demo",
 								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Order by Customer Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/spring-h2-demo/order/customer/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"spring-h2-demo",
+								"order",
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Order by Product Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/spring-h2-demo/order/product/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"spring-h2-demo",
+								"order",
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File",
+			"item": [
+				{
+					"name": "Get Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/spring-h2-demo/file",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"spring-h2-demo",
+								"file"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/spring-h2-demo/file/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"spring-h2-demo",
+								"file",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/spring-h2-demo/file",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"spring-h2-demo",
+								"file"
 							]
 						}
 					},
