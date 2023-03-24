@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
     @Transactional
     public FileResponseDTO insertFile(MultipartFile file) {
         try {
-            // TODO throw separated excetions, check lazy method
+            // TODO throw separated exceptions, check lazy method
             var fileName = file.getOriginalFilename();
             LOGGER.info("Checking whether file object exists by name: {}", fileName);
             repository.findByName(fileName).ifPresent(o -> {
