@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ public class MockServiceImpl implements MockService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MockServiceImpl.class);
 
     @Override
+    @Transactional
     public void instantiateH2Database() {
         LOGGER.info("Inserting customer mock");
         var customerRequest = CustomerRequest.builder()

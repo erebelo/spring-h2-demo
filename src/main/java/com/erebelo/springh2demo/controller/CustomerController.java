@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 import static com.erebelo.springh2demo.constants.BusinessConstants.CUSTOMER;
 
@@ -52,7 +51,7 @@ public class CustomerController {
         var response = service.insertCustomer(customerRequest);
 
         LOGGER.info(CUSTOMER_RESPONSE, response);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
