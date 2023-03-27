@@ -19,7 +19,8 @@ public enum ErrorEnum {
     ERROR_404_004("%s not found"),
     ERROR_404_005("%s not found by name: %s"),
     ERROR_409_001("The %s already exists. Try updating it instead of entering it"),
-    ERROR_409_002("The %s already exists by name: %s");
+    ERROR_409_002("The %s already exists by name: %s"),
+    ERROR_422_001("Invalid filename and/or content");
 
     private final String value;
 

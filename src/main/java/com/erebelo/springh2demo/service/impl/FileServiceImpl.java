@@ -20,6 +20,7 @@ import java.util.List;
 import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_001;
 import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_004;
 import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_409_002;
+import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_422_001;
 
 @Service
 @RequiredArgsConstructor
@@ -60,15 +61,19 @@ public class FileServiceImpl implements FileService {
     @Transactional
     public FileResponseDTO insertFile(MultipartFile file) {
         var dataBytes = extractFileBytes(file);
-        var fileName = file.getName();
+        var filename = file.getOriginalFilename();
 
-        LOGGER.info("Checking whether file object exists by name: {}", fileName);
-        fileRepository.findByName(fileName).ifPresent(o -> {
-            throw new StandardException(ERROR_409_002, FILE_MSG, fileName);
+        if (dataBytes.length == 0 || !validFilename(filename)) {
+            throw new StandardException(ERROR_422_001);
+        }
+
+        LOGGER.info("Checking whether file object exists by name: {}", filename);
+        fileRepository.findByName(filename).ifPresent(o -> {
+            throw new StandardException(ERROR_409_002, FILE_MSG, filename);
         });
 
-        LOGGER.info("Inserting file information: {}", fileName);
-        var fileEntity = mapper.fileToEntity(fileName);
+        LOGGER.info("Inserting file information: {}", filename);
+        var fileEntity = mapper.fileToEntity(filename);
         fileEntity = fileRepository.save(fileEntity);
 
         LOGGER.info("Inserting file data");
@@ -84,6 +89,19 @@ public class FileServiceImpl implements FileService {
             return file.getBytes();
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Error handling file: %s", file.getName()), e);
+        }
+    }
+
+    private boolean validFilename(String filename) {
+        try {
+            if (filename != null && !filename.trim().equals("")) {
+                String[] breakdown = filename.split("\\.");
+                return breakdown.length == 2 && !breakdown[0].trim().equals("");
+            }
+            return true;
+        } catch (Exception e) {
+            LOGGER.error(String.format("Exception not thrown when validating the filename: %s", filename), e);
+            return false;
         }
     }
 }
