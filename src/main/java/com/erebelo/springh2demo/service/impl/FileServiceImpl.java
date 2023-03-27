@@ -63,7 +63,7 @@ public class FileServiceImpl implements FileService {
         var dataBytes = extractFileBytes(file);
         var filename = file.getOriginalFilename();
 
-        if (dataBytes.length == 0 || !validFilename(filename)) {
+        if (dataBytes.length == 0 || !isValidFilename(filename)) {
             throw new StandardException(ERROR_422_001);
         }
 
@@ -92,7 +92,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private boolean validFilename(String filename) {
+    private boolean isValidFilename(String filename) {
         try {
             if (filename != null && !filename.trim().equals("")) {
                 String[] breakdown = filename.split("\\.");
