@@ -1,5 +1,6 @@
 package com.erebelo.springh2demo.mapper;
 
+import com.erebelo.springh2demo.domain.entity.FileDataEntity;
 import com.erebelo.springh2demo.domain.entity.FileEntity;
 import com.erebelo.springh2demo.domain.response.FileResponse;
 import com.erebelo.springh2demo.domain.response.FileResponseDTO;
@@ -17,10 +18,15 @@ public interface FileMapper {
 
     FileResponseDTO entityToResponseDTO(FileEntity entity);
 
-    FileResponse entityToResponse(FileEntity entity);
+    @Mapping(target = "id", source = "fileDataEntity.file.id")
+    @Mapping(target = "name", source = "fileDataEntity.file.name")
+    FileResponse fileDataEntityToResponse(FileDataEntity fileDataEntity);
 
     @Mapping(target = "name", source = "fileName")
+    FileEntity fileToEntity(String fileName);
+
+    @Mapping(target = "file", source = "entity")
     @Mapping(target = "data", source = "bytes")
-    FileEntity fileToEntity(String fileName, byte[] bytes);
+    FileDataEntity bytesToFileDataEntity(FileEntity entity, byte[] bytes);
 
 }

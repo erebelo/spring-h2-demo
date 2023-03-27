@@ -4,6 +4,7 @@ import com.erebelo.springh2demo.domain.response.FileResponse;
 import com.erebelo.springh2demo.domain.response.FileResponseDTO;
 import com.erebelo.springh2demo.exception.StandardException;
 import com.erebelo.springh2demo.mapper.FileMapper;
+import com.erebelo.springh2demo.repository.FileDataRepository;
 import com.erebelo.springh2demo.repository.FileRepository;
 import com.erebelo.springh2demo.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,8 @@ import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_409_002;
 public class FileServiceImpl implements FileService {
 
     private final FileMapper mapper;
-    private final FileRepository repository;
+    private final FileRepository fileRepository;
+    private final FileDataRepository fileDataRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileServiceImpl.class);
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
@@ -33,7 +35,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileResponseDTO> getFiles() {
         LOGGER.info("Getting files");
-        var fileEntityList = repository.findAll();
+        var fileEntityList = fileRepository.findAll();
 
         if (fileEntityList.isEmpty()) {
             throw new StandardException(ERROR_404_004, FILE_MSG);
@@ -46,27 +48,31 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileResponse getFileById(Long id) {
         LOGGER.info("Getting file by id: {}", id);
-        var fileEntity = repository.findById(id).orElseThrow(() ->
+        var fileDataEntity = fileDataRepository.findById(id).orElseThrow(() ->
                 new StandardException(ERROR_404_001, FILE_MSG, id));
 
-        LOGGER.info(RESPONSE_BODY_LOGGER, fileEntity.getName());
-        return mapper.entityToResponse(fileEntity);
+        LOGGER.info(RESPONSE_BODY_LOGGER, fileDataEntity.getFile().getName());
+        return mapper.fileDataEntityToResponse(fileDataEntity);
     }
 
     @Override
     @Transactional
     public FileResponseDTO insertFile(MultipartFile file) {
         try {
-            // TODO throw separated exceptions, check lazy method
+            // TODO throw separated exceptions
             var fileName = file.getOriginalFilename();
             LOGGER.info("Checking whether file object exists by name: {}", fileName);
-            repository.findByName(fileName).ifPresent(o -> {
+            fileRepository.findByName(fileName).ifPresent(o -> {
                 throw new StandardException(ERROR_409_002, FILE_MSG, fileName);
             });
 
-            var fileEntity = mapper.fileToEntity(fileName, file.getBytes());
-            LOGGER.info("Inserting file: {}", fileEntity.getName());
-            fileEntity = repository.save(fileEntity);
+            LOGGER.info("Inserting file information: {}", fileName);
+            var fileEntity = mapper.fileToEntity(fileName);
+            fileEntity = fileRepository.save(fileEntity);
+
+            LOGGER.info("Inserting file data");
+            var fileDataEntity = mapper.bytesToFileDataEntity(fileEntity, file.getBytes());
+            fileDataRepository.save(fileDataEntity);
 
             LOGGER.info(RESPONSE_BODY_LOGGER, fileEntity.getName());
             return mapper.entityToResponseDTO(fileEntity);
