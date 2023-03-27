@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_001;
@@ -58,25 +59,30 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public FileResponseDTO insertFile(MultipartFile file) {
+        var dataBytes = extractFileBytes(file);
+        var fileName = file.getName();
+
+        LOGGER.info("Checking whether file object exists by name: {}", fileName);
+        fileRepository.findByName(fileName).ifPresent(o -> {
+            throw new StandardException(ERROR_409_002, FILE_MSG, fileName);
+        });
+
+        LOGGER.info("Inserting file information: {}", fileName);
+        var fileEntity = mapper.fileToEntity(fileName);
+        fileEntity = fileRepository.save(fileEntity);
+
+        LOGGER.info("Inserting file data");
+        var fileDataEntity = mapper.bytesToFileDataEntity(fileEntity, dataBytes);
+        fileDataRepository.save(fileDataEntity);
+
+        LOGGER.info(RESPONSE_BODY_LOGGER, fileEntity.getName());
+        return mapper.entityToResponseDTO(fileEntity);
+    }
+
+    private byte[] extractFileBytes(MultipartFile file) {
         try {
-            // TODO throw separated exceptions
-            var fileName = file.getOriginalFilename();
-            LOGGER.info("Checking whether file object exists by name: {}", fileName);
-            fileRepository.findByName(fileName).ifPresent(o -> {
-                throw new StandardException(ERROR_409_002, FILE_MSG, fileName);
-            });
-
-            LOGGER.info("Inserting file information: {}", fileName);
-            var fileEntity = mapper.fileToEntity(fileName);
-            fileEntity = fileRepository.save(fileEntity);
-
-            LOGGER.info("Inserting file data");
-            var fileDataEntity = mapper.bytesToFileDataEntity(fileEntity, file.getBytes());
-            fileDataRepository.save(fileDataEntity);
-
-            LOGGER.info(RESPONSE_BODY_LOGGER, fileEntity.getName());
-            return mapper.entityToResponseDTO(fileEntity);
-        } catch (Exception e) {
+            return file.getBytes();
+        } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Error handling file: %s", file.getName()), e);
         }
     }
