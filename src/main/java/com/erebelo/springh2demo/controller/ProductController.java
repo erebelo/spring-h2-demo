@@ -25,7 +25,7 @@ import java.net.URI;
 import java.util.List;
 
 import static com.erebelo.springh2demo.constants.BusinessConstants.PRODUCT;
-import static com.erebelo.springh2demo.utils.UrlUtils.decodeParam;
+import static com.erebelo.springh2demo.util.UrlUtil.decodeParam;
 
 @Validated
 @RestController
