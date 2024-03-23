@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UrlUtil {
+public final class UrlUtil {
 
     public static String decodeParam(String s) {
         try {
