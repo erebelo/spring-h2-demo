@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static com.erebelo.springh2demo.constants.BusinessConstants.ORDER;
+import static com.erebelo.springh2demo.constant.BusinessConstant.ORDER;
 
 @Validated
 @RestController

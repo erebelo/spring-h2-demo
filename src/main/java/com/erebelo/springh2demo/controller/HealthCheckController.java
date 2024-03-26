@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.erebelo.springh2demo.constants.BusinessConstants.HEALTH_CHECK;
+import static com.erebelo.springh2demo.constant.BusinessConstant.HEALTH_CHECK;
 
 @RestController
 @RequestMapping(HEALTH_CHECK)

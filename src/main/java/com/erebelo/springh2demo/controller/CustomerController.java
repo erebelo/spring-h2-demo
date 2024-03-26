@@ -22,7 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 
-import static com.erebelo.springh2demo.constants.BusinessConstants.CUSTOMER;
+import static com.erebelo.springh2demo.constant.BusinessConstant.CUSTOMER;
 
 @Validated
 @RestController

@@ -21,7 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
-import static com.erebelo.springh2demo.constants.BusinessConstants.FILE;
+import static com.erebelo.springh2demo.constant.BusinessConstant.FILE;
 
 @Validated
 @RestController
