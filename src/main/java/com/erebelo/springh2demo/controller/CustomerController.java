@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 
 import static com.erebelo.springh2demo.constant.BusinessConstant.CUSTOMER;
 
-@Validated
 @RestController
 @RequestMapping(CUSTOMER)
 @RequiredArgsConstructor
