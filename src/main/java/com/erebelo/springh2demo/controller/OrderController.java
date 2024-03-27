@@ -6,7 +6,6 @@ import com.erebelo.springh2demo.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -48,20 +47,18 @@ public class OrderController {
     @GetMapping(value = "/customer/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<OrderResponse>> getOrderByCustomerId(@PathVariable Long id) {
         LOGGER.info("Getting order by customer id: {}", id);
-
         var response = service.getOrderByCustomerId(id);
 
         LOGGER.info(ORDER_RESPONSE, response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<OrderResponse>> getOrderByProductId(@PathVariable Long id) {
         LOGGER.info("Getting order by product id: {}", id);
-
         var response = service.getOrderByProductId(id);
 
         LOGGER.info(ORDER_RESPONSE, response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 }

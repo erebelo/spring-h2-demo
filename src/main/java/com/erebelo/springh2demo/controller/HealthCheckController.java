@@ -2,7 +2,6 @@ package com.erebelo.springh2demo.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +16,9 @@ public class HealthCheckController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheckController.class);
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getHealthCheck() {
         LOGGER.info("Getting health check");
-        return new ResponseEntity<>("Spring H2 Demo application is up and running", HttpStatus.OK);
+        return ResponseEntity.ok("Spring H2 Demo application is up and running");
     }
 }

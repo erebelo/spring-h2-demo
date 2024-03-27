@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -37,11 +36,10 @@ public class FileController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FileResponseDTO>> getFiles() {
         LOGGER.info("Getting files");
-
         var response = service.getFiles();
 
         LOGGER.info(FILE_RESPONSE, response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +53,7 @@ public class FileController {
         headers.setContentLength(response.getData().length);
 
         LOGGER.info(FILE_RESPONSE, response.getName());
-        return new ResponseEntity<>(response.getData(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(response.getData());
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

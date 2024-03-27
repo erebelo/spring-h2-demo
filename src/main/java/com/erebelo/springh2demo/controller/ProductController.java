@@ -6,7 +6,6 @@ import com.erebelo.springh2demo.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,22 +40,20 @@ public class ProductController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductResponse>> getProducts() {
         LOGGER.info("Getting products");
-
         var response = service.getProducts();
 
         LOGGER.info(PRODUCT_RESPONSE, response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductResponse>> getProductByName(@RequestParam String name) {
         name = decodeParam(name);
         LOGGER.info("Getting product by name: {}", name);
-
         var response = service.getProductByName(name);
 
         LOGGER.info(PRODUCT_RESPONSE, response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -74,6 +71,6 @@ public class ProductController {
         LOGGER.info("Deleting product by id: {}", id);
         service.deleteProduct(id);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }
