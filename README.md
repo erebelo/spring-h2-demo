@@ -1,5 +1,5 @@
 # Spring H2 Demo
-REST API project developed in Java using Spring Boot framework and H2 database
+REST API project developed in Java using Spring Boot framework and H2 database.
 
 ----------
 
@@ -11,7 +11,7 @@ REST API project developed in Java using Spring Boot framework and H2 database
 ----------
 
 ## Run App
-Run the SpringH2DemoApplication class as Java Application
+Run the SpringH2DemoApplication class as Java Application.
 
 ----------
 
