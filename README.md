@@ -1,5 +1,5 @@
 # Spring H2 Demo
-REST API project developed in Java using Spring Boot framework and H2 database.
+REST API project developed in Java using Spring Boot framework and H2 database
 
 ----------
 
