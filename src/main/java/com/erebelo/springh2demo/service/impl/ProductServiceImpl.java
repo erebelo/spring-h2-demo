@@ -2,7 +2,8 @@ package com.erebelo.springh2demo.service.impl;
 
 import com.erebelo.springh2demo.domain.request.ProductRequest;
 import com.erebelo.springh2demo.domain.response.ProductResponse;
-import com.erebelo.springh2demo.exception.StandardException;
+import com.erebelo.springh2demo.exception.model.ConflictException;
+import com.erebelo.springh2demo.exception.model.NotFoundException;
 import com.erebelo.springh2demo.mapper.ProductMapper;
 import com.erebelo.springh2demo.repository.ProductRepository;
 import com.erebelo.springh2demo.service.ProductService;
@@ -14,12 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_001;
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_003;
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_004;
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_005;
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_409_002;
-
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -28,9 +23,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
-    private static final String CHECK_OBJ_LOGGER = "Checking whether product object exists by %s: {}";
+    private static final String CHECK_OBJ_LOGGER = "Checking whether product object exists by {}: {}";
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
-    private static final String PRODUCT = "Product";
 
     @Override
     public List<ProductResponse> getProducts() {
@@ -38,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
         var productEntityList = repository.findAll();
 
         if (productEntityList.isEmpty()) {
-            throw new StandardException(ERROR_404_004, PRODUCT);
+            throw new NotFoundException("Product not found");
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, productEntityList);
@@ -51,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
         var productEntityList = repository.findByNameContainingIgnoreCase(name);
 
         if (productEntityList.isEmpty()) {
-            throw new StandardException(ERROR_404_005, PRODUCT, name);
+            throw new NotFoundException(String.format("Product not found by name: %s", name));
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, productEntityList);
@@ -62,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Long id) {
         LOGGER.info("Getting product by id: {}", id);
         var productEntity = repository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_001, PRODUCT, id));
+                new NotFoundException(String.format("Product not found by id: %s", id)));
 
         LOGGER.info(RESPONSE_BODY_LOGGER, productEntity);
         return mapper.entityToResponse(productEntity);
@@ -71,9 +65,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponse insertProduct(ProductRequest productRequest) {
-        LOGGER.info(String.format(CHECK_OBJ_LOGGER, "name"), productRequest.getName());
+        LOGGER.info(CHECK_OBJ_LOGGER, "name", productRequest.getName());
         repository.findByName(productRequest.getName()).ifPresent(o -> {
-            throw new StandardException(ERROR_409_002, PRODUCT, productRequest.getName());
+            throw new ConflictException(String.format("Product already exists by name: %s", productRequest.getName()));
         });
 
         var productEntity = mapper.requestToEntity(productRequest);
@@ -87,9 +81,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(Long id) {
-        LOGGER.info(String.format(CHECK_OBJ_LOGGER, "id"), id);
+        LOGGER.info(CHECK_OBJ_LOGGER, "id", id);
         var productEntity = repository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_003, PRODUCT, id));
+                new NotFoundException(String.format("The delete operation has not been completed as the product was not found by id: %s", id)));
 
         LOGGER.info("Deleting product: {}", productEntity);
         repository.delete(productEntity);

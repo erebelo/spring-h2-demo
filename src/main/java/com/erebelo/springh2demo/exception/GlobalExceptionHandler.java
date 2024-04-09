@@ -1,18 +1,26 @@
 package com.erebelo.springh2demo.exception;
 
+import com.erebelo.springh2demo.exception.model.ConflictException;
+import com.erebelo.springh2demo.exception.model.NotFoundException;
+import com.erebelo.springh2demo.exception.model.UnprocessableEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -22,77 +30,115 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public ExceptionResponse exception(Exception exception, HttpServletResponse response) {
-        LOGGER.error("Exception thrown", exception);
-        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), response);
+    public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
+        LOGGER.error("Exception thrown:", exception);
+        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalStateException.class)
-    public ExceptionResponse illegalStateException(IllegalStateException exception, HttpServletResponse response) {
-        LOGGER.error("IllegalStateException thrown", exception);
-        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), response);
+    public ResponseEntity<ExceptionResponse> handleIllegalStateException(IllegalStateException exception) {
+        LOGGER.error("IllegalStateException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionResponse illegalArgumentException(IllegalArgumentException exception, HttpServletResponse response) {
-        LOGGER.error("IllegalArgumentException thrown", exception);
-        return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage(), response);
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+        LOGGER.error("IllegalArgumentException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
-    public ExceptionResponse constraintViolationException(ConstraintViolationException exception, HttpServletResponse response) {
-        LOGGER.error("ConstraintViolationException thrown", exception);
-        return parseExceptionMessage(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage(), response);
+    public ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException exception) {
+        LOGGER.error("ConstraintViolationException thrown:", exception);
+
+        String errorMessage = null;
+        Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
+        if (!ObjectUtils.isEmpty(violations)) {
+            List<String> messages = violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.toList());
+            errorMessage = String.join(";", messages);
+        }
+
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
     @ResponseBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ExceptionResponse httpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletResponse response) {
-        LOGGER.error("HttpMessageNotReadableException thrown", exception);
-        return parseExceptionMessage(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage(), response);
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+        LOGGER.error("HttpMessageNotReadableException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
+        LOGGER.error("HttpRequestMethodNotSupportedException thrown:", exception);
+
+        String errorMessage = exception.getMessage();
+        var supportedHttpMethods = exception.getSupportedMethods();
+        if (!ObjectUtils.isEmpty(supportedHttpMethods)) {
+            errorMessage += ". Supported methods: " + String.join(", ", supportedHttpMethods);
+        }
+
+        return parseExceptionMessage(HttpStatus.METHOD_NOT_ALLOWED, errorMessage);
     }
 
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ExceptionResponse methodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletResponse response) {
-        LOGGER.error("MethodArgumentNotValidException thrown", exception);
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        LOGGER.error("MethodArgumentNotValidException thrown:", exception);
 
+        String errorMessage = null;
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        String message = "No message found";
         if (!fieldErrors.isEmpty()) {
-            message = fieldErrors.stream()
+            errorMessage = fieldErrors.stream()
                     .map(FieldError::getDefaultMessage)
-                    .collect(Collectors.toList()).toString();
+                    .collect(Collectors.toList())
+                    .toString();
         }
-        return parseExceptionMessage(HttpStatus.UNPROCESSABLE_ENTITY, message, response);
+
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
-    @ResponseBody
-    @ExceptionHandler(StandardException.class)
-    public ExceptionResponse standardException(StandardException exception, HttpServletResponse response) {
-        LOGGER.error("StandardException thrown", exception);
-        return parseStandardExceptionMessage(exception, response);
-    }
+    @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<ExceptionResponse> handleTransactionSystemException(TransactionSystemException exception) {
+        LOGGER.error("TransactionSystemException thrown:", exception);
 
-    private ExceptionResponse parseExceptionMessage(HttpStatus status, String message, HttpServletResponse response) {
-        response.setStatus(status.value());
-        return new ExceptionResponse(status, message, System.currentTimeMillis());
-    }
-
-    private ExceptionResponse parseStandardExceptionMessage(StandardException exception, HttpServletResponse response) {
-        ExceptionResponse exceptionResponse;
-        try {
-            Integer errorCode = Integer.valueOf(exception.getError().toString().split("_")[1]);
-            exceptionResponse = new ExceptionResponse(HttpStatus.valueOf(errorCode), String.format(exception.getError().getValue(),
-                    exception.getArgs()), System.currentTimeMillis());
-        } catch (Exception e) {
-            exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, String.format("Basic error handling exception: %s", e),
-                    System.currentTimeMillis());
+        var errorMessage = "An error occurred during transaction processing";
+        var rootCause = exception.getRootCause();
+        if (rootCause != null && !ObjectUtils.isEmpty(rootCause.getMessage())) {
+            errorMessage += ". Root cause: " + rootCause.getMessage();
         }
-        response.setStatus(exceptionResponse.getStatus().value());
-        return exceptionResponse;
+
+        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException exception) {
+        LOGGER.error("NotFoundException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ExceptionResponse> handleConflictException(ConflictException exception) {
+        LOGGER.error("ConflictException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ResponseEntity<ExceptionResponse> handleUnprocessableEntityException(UnprocessableEntityException exception) {
+        LOGGER.error("UnprocessableEntityException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
+    }
+
+    private ResponseEntity<ExceptionResponse> parseExceptionMessage(final HttpStatus httpStatus, final String message) {
+        var errorHttpStatus = ObjectUtils.isEmpty(httpStatus) ? HttpStatus.INTERNAL_SERVER_ERROR : httpStatus;
+        var errorMessage = ObjectUtils.isEmpty(message) ? "No defined message" : message;
+
+        return ResponseEntity.status(httpStatus).body(new ExceptionResponse(errorHttpStatus, errorMessage, System.currentTimeMillis()));
     }
 }

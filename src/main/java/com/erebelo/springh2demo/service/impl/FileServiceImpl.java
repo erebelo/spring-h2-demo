@@ -2,7 +2,9 @@ package com.erebelo.springh2demo.service.impl;
 
 import com.erebelo.springh2demo.domain.response.FileResponse;
 import com.erebelo.springh2demo.domain.response.FileResponseDTO;
-import com.erebelo.springh2demo.exception.StandardException;
+import com.erebelo.springh2demo.exception.model.ConflictException;
+import com.erebelo.springh2demo.exception.model.NotFoundException;
+import com.erebelo.springh2demo.exception.model.UnprocessableEntityException;
 import com.erebelo.springh2demo.mapper.FileMapper;
 import com.erebelo.springh2demo.repository.FileDataRepository;
 import com.erebelo.springh2demo.repository.FileRepository;
@@ -12,15 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_001;
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_404_004;
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_409_002;
-import static com.erebelo.springh2demo.exception.ErrorEnum.ERROR_422_001;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +29,8 @@ public class FileServiceImpl implements FileService {
     private final FileDataRepository fileDataRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileServiceImpl.class);
+
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
-    private static final String FILE_MSG = "File";
 
     @Override
     public List<FileResponseDTO> getFiles() {
@@ -40,7 +38,7 @@ public class FileServiceImpl implements FileService {
         var fileEntityList = fileRepository.findAll();
 
         if (fileEntityList.isEmpty()) {
-            throw new StandardException(ERROR_404_004, FILE_MSG);
+            throw new NotFoundException("File not found");
         }
 
         LOGGER.info(RESPONSE_BODY_LOGGER, fileEntityList);
@@ -51,7 +49,7 @@ public class FileServiceImpl implements FileService {
     public FileResponse getFileById(Long id) {
         LOGGER.info("Getting file by id: {}", id);
         var fileDataEntity = fileDataRepository.findById(id).orElseThrow(() ->
-                new StandardException(ERROR_404_001, FILE_MSG, id));
+                new NotFoundException(String.format("File not found by id: %s", id)));
 
         LOGGER.info(RESPONSE_BODY_LOGGER, fileDataEntity.getFile().getName());
         return mapper.fileDataEntityToResponse(fileDataEntity);
@@ -64,12 +62,12 @@ public class FileServiceImpl implements FileService {
         var filename = file.getOriginalFilename();
 
         if (dataBytes.length == 0 || !isValidFilename(filename)) {
-            throw new StandardException(ERROR_422_001);
+            throw new UnprocessableEntityException("Invalid filename and/or content");
         }
 
         LOGGER.info("Checking whether file object exists by name: {}", filename);
         fileRepository.findByName(filename).ifPresent(o -> {
-            throw new StandardException(ERROR_409_002, FILE_MSG, filename);
+            throw new ConflictException(String.format("File already exists by name: %s", filename));
         });
 
         LOGGER.info("Inserting file information: {}", filename);
@@ -94,13 +92,13 @@ public class FileServiceImpl implements FileService {
 
     private boolean isValidFilename(String filename) {
         try {
-            if (filename != null && !filename.trim().equals("")) {
+            if (!ObjectUtils.isEmpty(filename)) {
                 String[] breakdown = filename.split("\\.");
-                return breakdown.length == 2 && !breakdown[0].trim().equals("");
+                return breakdown.length == 2 && !ObjectUtils.isEmpty(breakdown[0]);
             }
             return true;
         } catch (Exception e) {
-            LOGGER.error(String.format("Exception not thrown when validating the filename: %s", filename), e);
+            LOGGER.warn(String.format("Exception not thrown when validating the filename: %s", filename), e);
             return false;
         }
     }
