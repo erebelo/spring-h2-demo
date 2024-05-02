@@ -14,7 +14,7 @@
     <artifactId>spring-h2-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-h2-demo</name>
-    <description>Java project using Spring Boot framework and H2 database</description>
+    <description>Java project using Spring Boot and H2 database</description>
 
     <properties>
         <java.version>11</java.version>
