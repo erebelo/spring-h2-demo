@@ -18,4 +18,4 @@ Run the SpringH2DemoApplication class as Java Application.
 
 ## Diagram
 
-[Entity Relationship Diagram](https://github.com/erebelo/spring-h2-demo/blob/develop/diagram/https://github.com/erebelo/spring-h2-demo/blob/main/diagram/Entity%20Relationship%20Diagram.PNG)
+[Entity Relationship Diagram](https://github.com/erebelo/spring-h2-demo/blob/main/diagram/Entity%20Relationship%20Diagram.PNG)
