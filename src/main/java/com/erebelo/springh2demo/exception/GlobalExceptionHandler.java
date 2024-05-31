@@ -5,6 +5,9 @@ import com.erebelo.springh2demo.exception.model.NotFoundException;
 import com.erebelo.springh2demo.exception.model.UnprocessableEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -115,6 +119,30 @@ public class GlobalExceptionHandler {
         }
 
         return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        LOGGER.error("DataIntegrityViolationException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.CONFLICT, exception.getRootCause().getMessage());
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<ExceptionResponse> handleDuplicateKeyException(DuplicateKeyException exception) {
+        LOGGER.error("DuplicateKeyException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ExceptionResponse> handleSQLException(SQLException exception) {
+        LOGGER.error("SQLException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException exception) {
+        LOGGER.error("InvalidDataAccessApiUsageException thrown:", exception);
+        return parseExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
