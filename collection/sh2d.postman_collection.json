@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Health Check API",
+			"name": "Health Check",
 			"item": [
 				{
 					"name": "GET Health Check",
