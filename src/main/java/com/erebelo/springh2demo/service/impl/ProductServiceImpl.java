@@ -27,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductResponse> getProducts() {
         LOGGER.info("Getting products");
         var productEntityList = repository.findAll();
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductResponse> getProductByName(String name) {
         LOGGER.info("Getting product by name: {}", name);
         var productEntityList = repository.findByNameContainingIgnoreCase(name);
@@ -53,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductResponse getProductById(Long id) {
         LOGGER.info("Getting product by id: {}", id);
         var productEntity = repository.findById(id).orElseThrow(() ->

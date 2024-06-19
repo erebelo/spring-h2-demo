@@ -33,6 +33,7 @@ public class FileServiceImpl implements FileService {
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
 
     @Override
+    @Transactional(readOnly = true)
     public List<FileResponseDTO> getFiles() {
         LOGGER.info("Getting files");
         var fileEntityList = fileRepository.findAll();
@@ -46,6 +47,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FileResponse getFileById(Long id) {
         LOGGER.info("Getting file by id: {}", id);
         var fileDataEntity = fileDataRepository.findById(id).orElseThrow(() ->

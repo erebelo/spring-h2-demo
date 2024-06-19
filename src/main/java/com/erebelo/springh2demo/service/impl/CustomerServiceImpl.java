@@ -27,6 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
     private static final String RESPONSE_BODY_LOGGER = "Response body: {}";
 
     @Override
+    @Transactional(readOnly = true)
     public CustomerResponse getCustomerById(Long id) {
         LOGGER.info("Getting customer by id: {}", id);
         var customerEntity = repository.findById(id).orElseThrow(() ->

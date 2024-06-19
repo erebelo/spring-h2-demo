@@ -62,6 +62,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderResponse> getOrderByCustomerId(Long customerId) {
         LOGGER.info("Getting customer by id from customer service");
         var customerResponse = customerService.getCustomerById(customerId);
@@ -79,6 +80,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderResponse> getOrderByProductId(Long productId) {
         LOGGER.info("Getting orders id by product id: {}", productId);
         var orderIds = repository.nativeFindByProductId(productId);
